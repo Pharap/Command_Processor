@@ -96,6 +96,10 @@ inline void testForlostRadioConfiguration()   // this tests for the radio losing
 
 }
 
+constexpr char openingString[] PROGMEM = "opening";
+constexpr char openString[] PROGMEM = "OPEN";
+constexpr char closingString[] PROGMEM = "closing";
+constexpr char closedString[] PROGMEM = "CLOSED";
 
 inline void createStatusMessage()
 {

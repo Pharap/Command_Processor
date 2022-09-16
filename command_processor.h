@@ -229,24 +229,21 @@ inline void updateProcessor()
     }
 
     // Close shutter command
-    if (text[0] == 'C' && text[1] == 'S' && text[2] == '#')
+    if (strcmp_P(text, closeShutterCommand) == 0)
     {
-      //Serial.print ("received CS");
       movementState = MovementState::Closing;
       closeShutter();
-
     }
 
     // Open shutter command
-    if (text[0] == 'O' && text[1] == 'S' && text[2] == '#')
+    if (strcmp_P(text, openShutterCommand) == 0)
     {
       movementState = MovementState::Opening;
       openShutter();
-
     }
 
     // Shutter status command
-    if (text[0] == 'S' && text[1] == 'S' && text[2] == '#')
+    if (strcmp_P(text, shutterStatusCommand) == 0)
     {
       testForlostRadioConfiguration();
 

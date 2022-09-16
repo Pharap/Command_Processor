@@ -45,20 +45,20 @@ uint32_t configTimer =  millis();
 
 inline void closeShutter()
 {
-  // commands to close shutters
-  digitalWrite (openShutterPin , HIGH);             // activate the open shutter routine on the shutter arduino
-  digitalWrite (closeShutterPin, LOW);             // 50 millisec delay, then high again
+  // Activate the open shutter routine on the shutter arduino
+  digitalWrite(openShutterPin , HIGH);
 
-
-} // end  CS
-
+  // 50 millisecond delay, then high again
+  digitalWrite(closeShutterPin, LOW);
+}
 
 inline void openShutter()
 {
   digitalWrite (closeShutterPin, HIGH);
-  digitalWrite (openShutterPin, LOW);               // activate the open shutter routine on the shutter arduino
 
-}// end  OS
+  // Activate the open shutter routine on the shutter arduino
+  digitalWrite (openShutterPin, LOW);
+}
 
 inline void configureRadio()
 {

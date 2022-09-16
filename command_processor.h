@@ -101,7 +101,7 @@ inline void createStatusMessage()
 
   shutterStatus = digitalRead(shutterStatusPin);   // the status pin is set in shutter arduino true = closed
 
-if ( (movementState=="OPENING" ) && (shutterStatus==true) )
+if ( (movementState=="OPENING" ) && shutterStatus )
 {
     message [0] = 'o';
     message [1] = 'p';
@@ -113,7 +113,7 @@ if ( (movementState=="OPENING" ) && (shutterStatus==true) )
     message [7] = 0;
 }
  
-if ( (movementState=="OPENING" ) && (shutterStatus==false) )
+if ( (movementState=="OPENING" ) && !shutterStatus )
   {
 
     message [0] = 'O';
@@ -127,7 +127,7 @@ if ( (movementState=="OPENING" ) && (shutterStatus==false) )
     digitalWrite (openShutterPin, HIGH); // the status is 'open', so set the open activation pin back to high
   }
 
-if ( (movementState=="CLOSING" ) && (shutterStatus==false) )
+if ( (movementState=="CLOSING" ) && !shutterStatus )
 
  {
     message [0] = 'c';
@@ -141,7 +141,7 @@ if ( (movementState=="CLOSING" ) && (shutterStatus==false) )
     
   }
 
-if ( (movementState=="CLOSING" ) && (shutterStatus==true) )
+if ( (movementState=="CLOSING" ) && shutterStatus )
 {
     message [0] = 'C';
     message [1] = 'L';
@@ -238,11 +238,11 @@ inline void updateProcessor()
 
       txSent = false;
 
-      while (txSent == false)
+      while (!txSent)
       {
         txSent = radio.write(&message, sizeof(message));   // true if the tx was successful
         // test for timeout after tx
-        if (txSent == false)
+        if (!txSent)
         {
           configureRadio();    // if the Tx wasn't successful, restart the radio
           radio.stopListening();

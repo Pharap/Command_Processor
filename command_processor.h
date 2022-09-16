@@ -9,17 +9,30 @@
 
 #include <RF24.h>
 
-//for nrf to work, pin 10 must be high if it is not used as an nrf connecton
+constexpr char pkVersion[] = "2.0";
+
+// For nrf to work, pin 10 must be high if it is not used as an nrf connecton
 constexpr uint8_t pin10 = 10;
 
-RF24 radio(7, 8); // CE, CSN
+// CE, CSN
+RF24 radio(7, 8);
 
-// pin definitions for shutter relays
-
+// Pin definitions for shutter relays
 // These data pins link to  Relay board pins IN1, IN2, IN3 and IN4
-constexpr uint8_t openShutterPin = 30;      // arduino  pin 46 corresponds with same pin number on the shutter arduino
-constexpr uint8_t closeShutterPin = 34;      // these 3 pins are used to ' lay off' the open close and status commands to the shutter arduino
-constexpr uint8_t shutterStatusPin = 48;      // to prevent the shutter status command being blocked and causing radio timeout
+// Arduino pin 46 corresponds with same pin number on the shutter arduino.
+// These 3 pins are used to ' lay off' the open close and status commands to the shutter Arduino,
+// to prevent the shutter status command being blocked and causing radio timeout.
+constexpr uint8_t openShutterPin = 30;
+constexpr uint8_t closeShutterPin = 34;
+constexpr uint8_t shutterStatusPin = 48;
+
+// The address of this Arduino board/transmitter
+constexpr uint8_t thisAddress[] = "shutt";
+
+// The address of the master radio?
+constexpr uint8_t masterNodeAddress[] = "mastr";
+
+constexpr uint8_t channel = 115;
 
 enum class MovementState : uint8_t
 {
@@ -28,17 +41,9 @@ enum class MovementState : uint8_t
 	Closing,
 };
 
-constexpr uint8_t thisAddress[]       = "shutt";   // "shutt" - the address of this arduino board/ transmitter
-constexpr uint8_t masterNodeAddress[] = "mastr";
-
-constexpr uint8_t channel    = 115;
-
-char message[10]     = "CLOSED";
-constexpr char pkVersion[]     = "2.0";
 MovementState movementState = MovementState::Initial;
 
-//========================================================================================================================================
-//========================================================================================================================================
+char message[10] = "CLOSED";
 
 inline void closeShutter()
 {
@@ -167,8 +172,6 @@ inline void createStatusMessage()
     break;
   }
 }
-//
-//
 
 inline void setupProcessor()
 {
@@ -214,7 +217,7 @@ inline void updateProcessor()
       const uint32_t now = millis();
       const uint32_t elapsed = (now - failTimer);
 
-      //If available always returns true, there is a problem
+      // If available always returns true, there is a problem
       if (elapsed > 250)
       {
         radio.failureDetected = true;

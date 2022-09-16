@@ -62,19 +62,26 @@ inline void openShutter()
 
 inline void configureRadio()
 {
-
   radio.begin();
-  radio.setChannel(channel);
-  radio.setDataRate(RF24_250KBPS);           // set RF datarate
 
-  // enable ack payload - slaves can reply with data using this feature if needed in future
+  radio.setChannel(channel);
+
+  // Set RF datarate
+  radio.setDataRate(RF24_250KBPS);
+
+  // Enable ack payload - slaves can reply with data using this feature if needed in future
   radio.enableAckPayload();
 
-  radio.setPALevel(RF24_PA_LOW);            // this is one step up from MIN and provides approx 15 feet range - so fine in observatory
-  radio.enableDynamicPayloads();
-  radio.setRetries(15, 15);                 // 15 retries at 15ms intervals
+  // This is one step up from MIN and provides approx 15 feet range - so fine in observatory
+  radio.setPALevel(RF24_PA_LOW);
 
-  radio.openReadingPipe(1, thisAddress);    // the 1st parameter can be any number 1 to 5 the master routine uses 1
+  radio.enableDynamicPayloads();
+
+  // 15 retries at 15ms intervals
+  radio.setRetries(15, 15);
+
+  // The 1st parameter can be any number from 1 to 5, the master routine uses 1
+  radio.openReadingPipe(1, thisAddress);
   radio.openWritingPipe(masterNodeAddress);
 }
 

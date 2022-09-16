@@ -126,7 +126,7 @@ constexpr char closedString[] PROGMEM = "CLOSED";
 template<size_t size> void writeMessageStringP(const char (&messageString)[size])
 {
   static_assert(sizeof(message) > size, "Provided message is larger than the message buffer");
-  strncpy_P(&message, &messageString, size);
+  strncpy_P(&message[0], &messageString[0], size);
 }
 
 inline void createStatusMessage()

@@ -185,9 +185,9 @@ inline void setupProcessor()
 
   SPI.begin();
 
+  // Used only for debug writes to sermon
   Serial.begin(19200);
 
-  // Used only for debug writes to sermon
   configureRadio();
 
   // Listen for commands from the master radio, which itself receives commands from the C# dome driver

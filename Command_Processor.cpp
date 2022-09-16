@@ -21,16 +21,16 @@ void CreateStatusMessage();
 
 
 //for nrf to work, pin 10 must be high if it is not used as an nrf connecton
-#define PIN10  10
+constexpr uint8_t pin10 = 10;
 
 RF24 radio(7, 8); // CE, CSN
 
 // pin definitions for shutter relays
 
 // These data pins link to  Relay board pins IN1, IN2, IN3 and IN4
-#define open_shutter_pin    30      // arduino  pin 46 corresponds with same pin number on the shutter arduino
-#define close_shutter_pin   34      // these 3 pins are used to ' lay off' the open close and status commands to the shutter arduino
-#define shutter_status_pin  48      // to prevent the shutter status command being blocked and causing radio timeout
+constexpr uint8_t open_shutter_pin = 30;      // arduino  pin 46 corresponds with same pin number on the shutter arduino
+constexpr uint8_t close_shutter_pin = 34;      // these 3 pins are used to ' lay off' the open close and status commands to the shutter arduino
+constexpr uint8_t shutter_status_pin = 48;      // to prevent the shutter status command being blocked and causing radio timeout
 
 
 
@@ -49,7 +49,7 @@ bool Tx_sent         = false;
 void setup()
 {
 
-  pinMode(PIN10,                  OUTPUT);                     // this is an NRF24L01 requirement if pin 10 is not used
+  pinMode(pin10,                  OUTPUT);                     // this is an NRF24L01 requirement if pin 10 is not used
   pinMode(open_shutter_pin,       OUTPUT);
   pinMode(close_shutter_pin,      OUTPUT);
   pinMode(shutter_status_pin,     INPUT_PULLUP);  //input on this arduino and OUTPUT on the shutter arduino

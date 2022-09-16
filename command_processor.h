@@ -40,9 +40,6 @@ MovementState movementState = MovementState::Initial;
 //========================================================================================================================================
 //========================================================================================================================================
 
-
-uint32_t configTimer =  millis();
-
 inline void closeShutter()
 {
   // Activate the open shutter routine on the shutter arduino
@@ -85,22 +82,35 @@ inline void configureRadio()
   radio.openWritingPipe(masterNodeAddress);
 }
 
-inline void testForlostRadioConfiguration()   // this tests for the radio losing its configuration - one of the known failure modes for the NRF24l01+
+// The last time the radio configuration was tested.
+uint32_t configTimer =  millis();
+
+// This tests for the radio losing its configuration - one of the known failure modes for the NRF24l01+
+inline void testForlostRadioConfiguration()
 {
+  // Cache the current time
+  const uint32_t now = millis();
 
-  if (millis() - configTimer > 5000)
+  // Calculate the time elapsed since the last check
+  const uint32_t elapsed = (now - configTimer);
+
+  // If less than 5000ms has elapsed
+  if (elapsed < 5000)
+    // Do nothing - exit early.
+    return;
+
+  // Update the config timer
+  configTimer = millis();
+
+  // First possible radio error - the configuration has been lost.
+  // This can be checked by testing whether a non default setting has returned to the default.
+  // For channel the default is 76.
+  if (radio.getChannel() != 115)
   {
-    configTimer = millis();
-    if (radio.getChannel() != 115)   // first possible radio error - the configuration has been lost. This can be checked
-      // by testing whether a non default setting has returned to the default - for channel the default is 76
-    {
-      radio.failureDetected = true;
-      Serial.print("Radio configuration error detected");
-      configureRadio();
-
-    }
+    radio.failureDetected = true;
+    Serial.print("Radio configuration error detected");
+    configureRadio();
   }
-
 }
 
 constexpr char openingString[] PROGMEM = "opening";

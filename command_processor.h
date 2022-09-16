@@ -196,23 +196,23 @@ inline void setupProcessor()
 
 inline void updateProcessor()
 {
-
   if (radio.available())
   {
-    char text[32] = "";             // used to store what the master node sent e.g AZ , SA SS
+    // Used to store what the master node sent e.g AZ , SA SS
+    char text[32] {};
 
-
-    //error detection for radio always avaiable below
-    //
+    // Error detection for radio always avaiable below
 
     uint32_t failTimer = millis();
 
     while (radio.available())
-    { //If available always returns true, there is a problem
+    {
+      //If available always returns true, there is a problem
       if (millis() - failTimer > 250)
       {
         radio.failureDetected = true;
-        configureRadio();                         // reconfigure the radio
+        // Reconfigure the radio
+        configureRadio();
         radio.startListening();
         Serial.println("Radio available failure detected");
         break;
@@ -221,9 +221,8 @@ inline void updateProcessor()
 
     }
 
-
-
-    if (text[0] == 'C' && text[1] == 'S' && text[2] == '#') // close shutter command
+    // Close shutter command
+    if (text[0] == 'C' && text[1] == 'S' && text[2] == '#')
     {
       //Serial.print ("received CS");
       movementState = MovementState::Closing;
@@ -231,52 +230,52 @@ inline void updateProcessor()
 
     }
 
-
-    if (text[0] == 'O' && text[1] == 'S' && text[2] == '#') // open shutter command
+    // Open shutter command
+    if (text[0] == 'O' && text[1] == 'S' && text[2] == '#')
     {
       movementState = MovementState::Opening;
       openShutter();
 
     }
 
-    if (text[0] == 'S' && text[1] == 'S' && text[2] == '#') //  shutter status command
+    // Shutter status command
+    if (text[0] == 'S' && text[1] == 'S' && text[2] == '#')
     {
-
-      testForlostRadioConfiguration() ;
+      testForlostRadioConfiguration();
 
       radio.stopListening();
 
-      //check for timeout / send failure
+      // Check for timeout / send failure
 
       bool txSent = false;
 
       while (!txSent)
       {
-        txSent = radio.write(&message, sizeof(message));   // true if the tx was successful
+        // true if the tx was successful
+        txSent = radio.write(&message, sizeof(message));
+
         // test for timeout after tx
         if (!txSent)
         {
-          configureRadio();    // if the Tx wasn't successful, restart the radio
+          // If the Tx wasn't successful, restart the radio
+          configureRadio();
           radio.stopListening();
           Serial.println("tx_sent failure ");
         }
         Serial.print("radio wrote ");
         Serial.println(message);
       }
+      
+      // Straight away after write to master, in case another message is sent
+      radio.startListening();
+    }
 
-      radio.startListening();                               // straight away after write to master, in case another message is sent
-
-  
-    }   //endif SS
-
-    text[0] = 0;   // set to null character
+    // Set to null character
+    text[0] = 0;
     text[1] = 0;
     text[2] = 0;
+  }
 
-  } //endif radio available
-
-
-  createStatusMessage();             // this sets message to OPEN or OPENING, CLOSING or CLOSED
-
-
-} // end void loop
+  // This sets message to OPEN or OPENING, CLOSING or CLOSED
+  createStatusMessage();
+}

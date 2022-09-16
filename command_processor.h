@@ -36,7 +36,6 @@ constexpr uint8_t channel    = 115;
 char message[10]     = "CLOSED";
 constexpr char pkVersion[]     = "2.0";
 MovementState movementState = MovementState::Initial;
-bool shutterStatus   = true;
 
 //========================================================================================================================================
 //========================================================================================================================================
@@ -102,7 +101,7 @@ inline void createStatusMessage()
 {
 
 
-  shutterStatus = digitalRead(shutterStatusPin);   // the status pin is set in shutter arduino true = closed
+  bool shutterStatus = (digitalRead(shutterStatusPin) != 0);   // the status pin is set in shutter arduino true = closed
 
 if ( (movementState==MovementState::Opening ) && shutterStatus )
 {

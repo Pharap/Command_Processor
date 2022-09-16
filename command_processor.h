@@ -273,11 +273,6 @@ inline void updateProcessor()
       // Straight away after write to master, in case another message is sent
       radio.startListening();
     }
-
-    // Set to null character
-    text[0] = 0;
-    text[1] = 0;
-    text[2] = 0;
   }
 
   // This sets message to OPEN or OPENING, CLOSING or CLOSED

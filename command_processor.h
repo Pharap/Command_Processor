@@ -28,8 +28,8 @@ enum class MovementState : uint8_t
 	Closing,
 };
 
-const byte thisAddress[6]       = "shutt";   // "shutt" - the address of this arduino board/ transmitter
-const byte masterNodeAddress[6] = "mastr";
+constexpr uint8_t thisAddress[6]       = "shutt";   // "shutt" - the address of this arduino board/ transmitter
+constexpr uint8_t masterNodeAddress[6] = "mastr";
 
 const int channel    = 115;
 

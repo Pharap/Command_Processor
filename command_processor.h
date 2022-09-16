@@ -36,7 +36,7 @@ const int channel    = 115;
 char message[10]     = "CLOSED";
 String receivedData;
 String pkVersion     = "2.0";
-String movementState = "";
+MovementState movementState = MovementState::Initial;
 bool shutterStatus   = true;
 bool txSent         = false;
 
@@ -106,7 +106,7 @@ inline void createStatusMessage()
 
   shutterStatus = digitalRead(shutterStatusPin);   // the status pin is set in shutter arduino true = closed
 
-if ( (movementState=="OPENING" ) && shutterStatus )
+if ( (movementState==MovementState::Opening ) && shutterStatus )
 {
     message [0] = 'o';
     message [1] = 'p';
@@ -118,7 +118,7 @@ if ( (movementState=="OPENING" ) && shutterStatus )
     message [7] = 0;
 }
  
-if ( (movementState=="OPENING" ) && !shutterStatus )
+if ( (movementState==MovementState::Opening ) && !shutterStatus )
   {
 
     message [0] = 'O';
@@ -132,7 +132,7 @@ if ( (movementState=="OPENING" ) && !shutterStatus )
     digitalWrite (openShutterPin, HIGH); // the status is 'open', so set the open activation pin back to high
   }
 
-if ( (movementState=="CLOSING" ) && !shutterStatus )
+if ( (movementState==MovementState::Closing ) && !shutterStatus )
 
  {
     message [0] = 'c';
@@ -146,7 +146,7 @@ if ( (movementState=="CLOSING" ) && !shutterStatus )
     
   }
 
-if ( (movementState=="CLOSING" ) && shutterStatus )
+if ( (movementState==MovementState::Closing ) && shutterStatus )
 {
     message [0] = 'C';
     message [1] = 'L';
@@ -219,7 +219,7 @@ inline void updateProcessor()
     if (text[0] == 'C' && text[1] == 'S' && text[2] == '#') // close shutter command
     {
       //Serial.print ("received CS");
-      movementState = "CLOSING";
+      movementState = MovementState::Closing;
       closeShutter();
 
     }
@@ -227,7 +227,7 @@ inline void updateProcessor()
 
     if (text[0] == 'O' && text[1] == 'S' && text[2] == '#') // open shutter command
     {
-      movementState = "OPENING";
+      movementState = MovementState::Opening;
       openShutter();
 
     }

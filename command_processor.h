@@ -34,7 +34,6 @@ constexpr uint8_t masterNodeAddress[] = "mastr";
 const int channel    = 115;
 
 char message[10]     = "CLOSED";
-String receivedData;
 String pkVersion     = "2.0";
 MovementState movementState = MovementState::Initial;
 bool shutterStatus   = true;

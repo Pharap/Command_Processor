@@ -31,7 +31,7 @@ enum class MovementState : uint8_t
 constexpr uint8_t thisAddress[]       = "shutt";   // "shutt" - the address of this arduino board/ transmitter
 constexpr uint8_t masterNodeAddress[] = "mastr";
 
-const int channel    = 115;
+constexpr uint8_t channel    = 115;
 
 char message[10]     = "CLOSED";
 constexpr char pkVersion[]     = "2.0";

@@ -108,7 +108,7 @@ inline void testForlostRadioConfiguration()
   if (radio.getChannel() != 115)
   {
     radio.failureDetected = true;
-    Serial.print("Radio configuration error detected");
+    Serial.print(F("Radio configuration error detected"));
     configureRadio();
   }
 }
@@ -221,7 +221,7 @@ inline void updateProcessor()
         // Reconfigure the radio
         configureRadio();
         radio.startListening();
-        Serial.println("Radio available failure detected");
+        Serial.println(F("Radio available failure detected"));
         break;
       }
 
@@ -264,9 +264,9 @@ inline void updateProcessor()
           // If the Tx wasn't successful, restart the radio
           configureRadio();
           radio.stopListening();
-          Serial.println("tx_sent failure ");
+          Serial.println(F("tx_sent failure "));
         }
-        Serial.print("radio wrote ");
+        Serial.print(F("radio wrote "));
         Serial.println(message);
       }
       

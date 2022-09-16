@@ -172,26 +172,27 @@ inline void createStatusMessage()
 
 inline void setupProcessor()
 {
-
-  pinMode(pin10,                  OUTPUT);                     // this is an NRF24L01 requirement if pin 10 is not used
+  // this is an NRF24L01 requirement if pin 10 is not used
+  pinMode(pin10,                  OUTPUT);
   pinMode(openShutterPin,       OUTPUT);
   pinMode(closeShutterPin,      OUTPUT);
-  pinMode(shutterStatusPin,     INPUT_PULLUP);  //input on this arduino and OUTPUT on the shutter arduino
+  // Input on this Arduino and OUTPUT on the shutter Arduino
+  pinMode(shutterStatusPin,     INPUT_PULLUP);
 
-  digitalWrite(openShutterPin,  HIGH);       //open and close pins are used as active low, so initialise to high
+  // Ppen and close pins are used as active low, so initialise to high
+  digitalWrite(openShutterPin,  HIGH);
   digitalWrite(closeShutterPin, HIGH);
 
   SPI.begin();
 
-  Serial.begin(19200);                         //used only for debug writes to sermon
+  Serial.begin(19200);
 
+  // Used only for debug writes to sermon
   configureRadio();
 
-  radio.startListening();                   // listen for commands from the master radio which itself receives from the c# dome driver
-
-
-}  // end setup
-
+  // Listen for commands from the master radio, which itself receives commands from the C# dome driver
+  radio.startListening();
+}
 
 inline void updateProcessor()
 {

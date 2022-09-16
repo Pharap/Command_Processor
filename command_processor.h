@@ -1,4 +1,4 @@
-//Version 2 - change the variable pkversion too. version control started jan 20
+//Version 2 - change the variable pkVersion too. version control started jan 20
 //changed baud rate to 19200 Jan 20
 //July 10th 21 I did a quick compare with the file in c:Arduino_Projects and this one seems to be the same, it just has the routines forward referenced
 // so it looks like I amde a start to convert it with VSCode
@@ -17,23 +17,23 @@ RF24 radio(7, 8); // CE, CSN
 // pin definitions for shutter relays
 
 // These data pins link to  Relay board pins IN1, IN2, IN3 and IN4
-constexpr uint8_t open_shutter_pin = 30;      // arduino  pin 46 corresponds with same pin number on the shutter arduino
-constexpr uint8_t close_shutter_pin = 34;      // these 3 pins are used to ' lay off' the open close and status commands to the shutter arduino
-constexpr uint8_t shutter_status_pin = 48;      // to prevent the shutter status command being blocked and causing radio timeout
+constexpr uint8_t openShutterPin = 30;      // arduino  pin 46 corresponds with same pin number on the shutter arduino
+constexpr uint8_t closeShutterPin = 34;      // these 3 pins are used to ' lay off' the open close and status commands to the shutter arduino
+constexpr uint8_t shutterStatusPin = 48;      // to prevent the shutter status command being blocked and causing radio timeout
 
 
 
-const byte thisaddress[6]       = "shutt";   // "shutt" - the address of this arduino board/ transmitter
-const byte masterNodeaddress[6] = "mastr";
+const byte thisAddress[6]       = "shutt";   // "shutt" - the address of this arduino board/ transmitter
+const byte masterNodeAddress[6] = "mastr";
 
 const int channel    = 115;
 
 char message[10]     = "CLOSED";
 String receivedData;
-String pkversion     = "2.0";
-String MovementState = "";
-bool shutterstatus   = true;
-bool Tx_sent         = false;
+String pkVersion     = "2.0";
+String movementState = "";
+bool shutterStatus   = true;
+bool txSent         = false;
 
 //========================================================================================================================================
 //========================================================================================================================================
@@ -41,24 +41,24 @@ bool Tx_sent         = false;
 
 uint32_t configTimer =  millis();
 
-inline void close_shutter()
+inline void closeShutter()
 {
   // commands to close shutters
-  digitalWrite (open_shutter_pin , HIGH);             // activate the open shutter routine on the shutter arduino
-  digitalWrite (close_shutter_pin, LOW);             // 50 millisec delay, then high again
+  digitalWrite (openShutterPin , HIGH);             // activate the open shutter routine on the shutter arduino
+  digitalWrite (closeShutterPin, LOW);             // 50 millisec delay, then high again
 
 
 } // end  CS
 
 
-inline void open_shutter()
+inline void openShutter()
 {
-  digitalWrite (close_shutter_pin, HIGH);
-  digitalWrite (open_shutter_pin, LOW);               // activate the open shutter routine on the shutter arduino
+  digitalWrite (closeShutterPin, HIGH);
+  digitalWrite (openShutterPin, LOW);               // activate the open shutter routine on the shutter arduino
 
 }// end  OS
 
-inline void ConfigureRadio()
+inline void configureRadio()
 {
 
   radio.begin();
@@ -72,11 +72,11 @@ inline void ConfigureRadio()
   radio.enableDynamicPayloads();
   radio.setRetries(15, 15);                 // 15 retries at 15ms intervals
 
-  radio.openReadingPipe(1, thisaddress);    // the 1st parameter can be any number 1 to 5 the master routine uses 1
-  radio.openWritingPipe(masterNodeaddress);
+  radio.openReadingPipe(1, thisAddress);    // the 1st parameter can be any number 1 to 5 the master routine uses 1
+  radio.openWritingPipe(masterNodeAddress);
 }
 
-inline void TestforlostRadioConfiguration()   // this tests for the radio losing its configuration - one of the known failure modes for the NRF24l01+
+inline void testForlostRadioConfiguration()   // this tests for the radio losing its configuration - one of the known failure modes for the NRF24l01+
 {
 
   if (millis() - configTimer > 5000)
@@ -87,7 +87,7 @@ inline void TestforlostRadioConfiguration()   // this tests for the radio losing
     {
       radio.failureDetected = true;
       Serial.print("Radio configuration error detected");
-      ConfigureRadio();
+      configureRadio();
 
     }
   }
@@ -95,13 +95,13 @@ inline void TestforlostRadioConfiguration()   // this tests for the radio losing
 }
 
 
-inline void CreateStatusMessage()
+inline void createStatusMessage()
 {
 
 
-  shutterstatus = digitalRead(shutter_status_pin);   // the status pin is set in shutter arduino true = closed
+  shutterStatus = digitalRead(shutterStatusPin);   // the status pin is set in shutter arduino true = closed
 
-if ( (MovementState=="OPENING" ) && (shutterstatus==true) )
+if ( (movementState=="OPENING" ) && (shutterStatus==true) )
 {
     message [0] = 'o';
     message [1] = 'p';
@@ -113,7 +113,7 @@ if ( (MovementState=="OPENING" ) && (shutterstatus==true) )
     message [7] = 0;
 }
  
-if ( (MovementState=="OPENING" ) && (shutterstatus==false) )
+if ( (movementState=="OPENING" ) && (shutterStatus==false) )
   {
 
     message [0] = 'O';
@@ -124,10 +124,10 @@ if ( (MovementState=="OPENING" ) && (shutterstatus==false) )
     message [5] = 0;
     message [6] = 0;
     message [7] = 0;
-    digitalWrite (open_shutter_pin, HIGH); // the status is 'open', so set the open activation pin back to high
+    digitalWrite (openShutterPin, HIGH); // the status is 'open', so set the open activation pin back to high
   }
 
-if ( (MovementState=="CLOSING" ) && (shutterstatus==false) )
+if ( (movementState=="CLOSING" ) && (shutterStatus==false) )
 
  {
     message [0] = 'c';
@@ -141,7 +141,7 @@ if ( (MovementState=="CLOSING" ) && (shutterstatus==false) )
     
   }
 
-if ( (MovementState=="CLOSING" ) && (shutterstatus==true) )
+if ( (movementState=="CLOSING" ) && (shutterStatus==true) )
 {
     message [0] = 'C';
     message [1] = 'L';
@@ -151,7 +151,7 @@ if ( (MovementState=="CLOSING" ) && (shutterstatus==true) )
     message [5] = 'D';
     message [6] = 0;
     message [7] = 0;
-    digitalWrite (close_shutter_pin, HIGH);   // the status is 'closed', so set the close activation pin back to high
+    digitalWrite (closeShutterPin, HIGH);   // the status is 'closed', so set the close activation pin back to high
   }
 
 
@@ -159,22 +159,22 @@ if ( (MovementState=="CLOSING" ) && (shutterstatus==true) )
 //
 //
 
-inline void setup_processor()
+inline void setupProcessor()
 {
 
   pinMode(pin10,                  OUTPUT);                     // this is an NRF24L01 requirement if pin 10 is not used
-  pinMode(open_shutter_pin,       OUTPUT);
-  pinMode(close_shutter_pin,      OUTPUT);
-  pinMode(shutter_status_pin,     INPUT_PULLUP);  //input on this arduino and OUTPUT on the shutter arduino
+  pinMode(openShutterPin,       OUTPUT);
+  pinMode(closeShutterPin,      OUTPUT);
+  pinMode(shutterStatusPin,     INPUT_PULLUP);  //input on this arduino and OUTPUT on the shutter arduino
 
-  digitalWrite(open_shutter_pin,  HIGH);       //open and close pins are used as active low, so initialise to high
-  digitalWrite(close_shutter_pin, HIGH);
+  digitalWrite(openShutterPin,  HIGH);       //open and close pins are used as active low, so initialise to high
+  digitalWrite(closeShutterPin, HIGH);
 
   SPI.begin();
 
   Serial.begin(19200);                         //used only for debug writes to sermon
 
-  ConfigureRadio();
+  configureRadio();
 
   radio.startListening();                   // listen for commands from the master radio which itself receives from the c# dome driver
 
@@ -182,7 +182,7 @@ inline void setup_processor()
 }  // end setup
 
 
-inline void update_processor()
+inline void updateProcessor()
 {
 
   if (radio.available())
@@ -200,7 +200,7 @@ inline void update_processor()
       if (millis() - failTimer > 250)
       {
         radio.failureDetected = true;
-        ConfigureRadio();                         // reconfigure the radio
+        configureRadio();                         // reconfigure the radio
         radio.startListening();
         Serial.println("Radio available failure detected");
         break;
@@ -214,37 +214,37 @@ inline void update_processor()
     if (text[0] == 'C' && text[1] == 'S' && text[2] == '#') // close shutter command
     {
       //Serial.print ("received CS");
-      MovementState = "CLOSING";
-      close_shutter();
+      movementState = "CLOSING";
+      closeShutter();
 
     }
 
 
     if (text[0] == 'O' && text[1] == 'S' && text[2] == '#') // open shutter command
     {
-      MovementState = "OPENING";
-      open_shutter();
+      movementState = "OPENING";
+      openShutter();
 
     }
 
     if (text[0] == 'S' && text[1] == 'S' && text[2] == '#') //  shutter status command
     {
 
-      TestforlostRadioConfiguration() ;
+      testForlostRadioConfiguration() ;
 
       radio.stopListening();
 
       //check for timeout / send failure
 
-      Tx_sent = false;
+      txSent = false;
 
-      while (Tx_sent == false)
+      while (txSent == false)
       {
-        Tx_sent = radio.write(&message, sizeof(message));   // true if the tx was successful
+        txSent = radio.write(&message, sizeof(message));   // true if the tx was successful
         // test for timeout after tx
-        if (Tx_sent == false)
+        if (txSent == false)
         {
-          ConfigureRadio();    // if the Tx wasn't successful, restart the radio
+          configureRadio();    // if the Tx wasn't successful, restart the radio
           radio.stopListening();
           Serial.println("tx_sent failure ");
         }
@@ -264,7 +264,7 @@ inline void update_processor()
   } //endif radio available
 
 
-  CreateStatusMessage();             // this sets message to OPEN or OPENING, CLOSING or CLOSED
+  createStatusMessage();             // this sets message to OPEN or OPENING, CLOSING or CLOSED
 
 
 } // end void loop

@@ -2,10 +2,10 @@
 
 void setup()
 {
-  setup_processor();
+  setupProcessor();
 }
 
 void loop()
 {
-  update_processor();
+  updateProcessor();
 }

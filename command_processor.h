@@ -109,33 +109,46 @@ template<size_t size> void writeMessageStringP(const char (&messageString)[size]
 
 inline void createStatusMessage()
 {
+  // The status pin is set in shutter arduino true = closed
+  bool shutterStatus = (digitalRead(shutterStatusPin) != 0);
 
-
-  bool shutterStatus = (digitalRead(shutterStatusPin) != 0);   // the status pin is set in shutter arduino true = closed
-
-  if ( (movementState==MovementState::Opening ) && shutterStatus )
+  switch(movementState)
   {
-    writeMessageStringP(openingString);
-  }
-  
-  if ( (movementState==MovementState::Opening ) && !shutterStatus )
-  {
-    writeMessageStringP(openString);
-    digitalWrite (openShutterPin, HIGH); // the status is 'open', so set the open activation pin back to high
-  }
+    case MovementState::Initial:
+      break;
+    
+    case MovementState::Opening:
+    {
+      if(shutterStatus)
+      {
+        writeMessageStringP(openingString);
+      }
+      else
+      {
+        writeMessageStringP(openString);
 
-  if ( (movementState==MovementState::Closing ) && !shutterStatus )
-  {
-    writeMessageStringP(closingString);
+        // The status is 'open', so set the open activation pin back to high
+        digitalWrite (openShutterPin, HIGH);
+      }
+    }
+    break;
+    
+    case MovementState::Closing:
+    {
+      if(shutterStatus)
+      {
+        writeMessageStringP(closingString);
+      }
+      else
+      {
+        writeMessageStringP(closedString);
+
+        // The status is 'closed', so set the close activation pin back to high
+        digitalWrite (closeShutterPin, HIGH);
+      }
+    }
+    break;
   }
-
-  if ( (movementState==MovementState::Closing ) && shutterStatus )
-  {
-    writeMessageStringP(closedString);
-    digitalWrite (closeShutterPin, HIGH);   // the status is 'closed', so set the close activation pin back to high
-  }
-
-
 }
 //
 //

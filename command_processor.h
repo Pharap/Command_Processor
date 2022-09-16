@@ -107,8 +107,8 @@ inline void createStatusMessage()
 
   bool shutterStatus = (digitalRead(shutterStatusPin) != 0);   // the status pin is set in shutter arduino true = closed
 
-if ( (movementState==MovementState::Opening ) && shutterStatus )
-{
+  if ( (movementState==MovementState::Opening ) && shutterStatus )
+  {
     message [0] = 'o';
     message [1] = 'p';
     message [2] = 'e';
@@ -117,11 +117,10 @@ if ( (movementState==MovementState::Opening ) && shutterStatus )
     message [5] = 'n';
     message [6] = 'g';
     message [7] = 0;
-}
- 
-if ( (movementState==MovementState::Opening ) && !shutterStatus )
+  }
+  
+  if ( (movementState==MovementState::Opening ) && !shutterStatus )
   {
-
     message [0] = 'O';
     message [1] = 'P';
     message [2] = 'E';
@@ -133,9 +132,8 @@ if ( (movementState==MovementState::Opening ) && !shutterStatus )
     digitalWrite (openShutterPin, HIGH); // the status is 'open', so set the open activation pin back to high
   }
 
-if ( (movementState==MovementState::Closing ) && !shutterStatus )
-
- {
+  if ( (movementState==MovementState::Closing ) && !shutterStatus )
+  {
     message [0] = 'c';
     message [1] = 'l';
     message [2] = 'o';
@@ -144,11 +142,10 @@ if ( (movementState==MovementState::Closing ) && !shutterStatus )
     message [5] = 'n';
     message [6] = 'g';
     message [7] = 0;
-    
   }
 
-if ( (movementState==MovementState::Closing ) && shutterStatus )
-{
+  if ( (movementState==MovementState::Closing ) && shutterStatus )
+  {
     message [0] = 'C';
     message [1] = 'L';
     message [2] = 'O';

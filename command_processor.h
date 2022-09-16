@@ -37,7 +37,6 @@ char message[10]     = "CLOSED";
 constexpr char pkVersion[]     = "2.0";
 MovementState movementState = MovementState::Initial;
 bool shutterStatus   = true;
-bool txSent         = false;
 
 //========================================================================================================================================
 //========================================================================================================================================
@@ -240,7 +239,7 @@ inline void updateProcessor()
 
       //check for timeout / send failure
 
-      txSent = false;
+      bool txSent = false;
 
       while (!txSent)
       {

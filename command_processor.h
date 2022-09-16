@@ -207,8 +207,11 @@ inline void updateProcessor()
 
     while (radio.available())
     {
+      const uint32_t now = millis();
+      const uint32_t elapsed = (now - failTimer);
+
       //If available always returns true, there is a problem
-      if (millis() - failTimer > 250)
+      if (elapsed > 250)
       {
         radio.failureDetected = true;
         // Reconfigure the radio
@@ -217,8 +220,8 @@ inline void updateProcessor()
         Serial.println("Radio available failure detected");
         break;
       }
-      radio.read(&text, sizeof(text));
 
+      radio.read(&text, sizeof(text));
     }
 
     // Close shutter command

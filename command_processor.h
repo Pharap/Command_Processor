@@ -194,6 +194,10 @@ inline void setupProcessor()
   radio.startListening();
 }
 
+constexpr char closeShutterCommand[] PROGMEM = "CS#";
+constexpr char openShutterCommand[] PROGMEM = "OS#";
+constexpr char shutterStatusCommand[] PROGMEM = "SS#";
+
 inline void updateProcessor()
 {
   if (radio.available())

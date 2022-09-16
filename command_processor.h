@@ -115,51 +115,23 @@ inline void createStatusMessage()
 
   if ( (movementState==MovementState::Opening ) && shutterStatus )
   {
-    message [0] = 'o';
-    message [1] = 'p';
-    message [2] = 'e';
-    message [3] = 'n';
-    message [4] = 'i';
-    message [5] = 'n';
-    message [6] = 'g';
-    message [7] = 0;
+    writeMessageStringP(openingString);
   }
   
   if ( (movementState==MovementState::Opening ) && !shutterStatus )
   {
-    message [0] = 'O';
-    message [1] = 'P';
-    message [2] = 'E';
-    message [3] = 'N';
-    message [4] = 0;
-    message [5] = 0;
-    message [6] = 0;
-    message [7] = 0;
+    writeMessageStringP(openString);
     digitalWrite (openShutterPin, HIGH); // the status is 'open', so set the open activation pin back to high
   }
 
   if ( (movementState==MovementState::Closing ) && !shutterStatus )
   {
-    message [0] = 'c';
-    message [1] = 'l';
-    message [2] = 'o';
-    message [3] = 's';
-    message [4] = 'i';
-    message [5] = 'n';
-    message [6] = 'g';
-    message [7] = 0;
+    writeMessageStringP(closingString);
   }
 
   if ( (movementState==MovementState::Closing ) && shutterStatus )
   {
-    message [0] = 'C';
-    message [1] = 'L';
-    message [2] = 'O';
-    message [3] = 'S';
-    message [4] = 'E';
-    message [5] = 'D';
-    message [6] = 0;
-    message [7] = 0;
+    writeMessageStringP(closedString);
     digitalWrite (closeShutterPin, HIGH);   // the status is 'closed', so set the close activation pin back to high
   }
 

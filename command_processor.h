@@ -21,7 +21,12 @@ constexpr uint8_t openShutterPin = 30;      // arduino  pin 46 corresponds with 
 constexpr uint8_t closeShutterPin = 34;      // these 3 pins are used to ' lay off' the open close and status commands to the shutter arduino
 constexpr uint8_t shutterStatusPin = 48;      // to prevent the shutter status command being blocked and causing radio timeout
 
-
+enum class MovementState : uint8_t
+{
+	Initial,
+	Opening,
+	Closing,
+};
 
 const byte thisAddress[6]       = "shutt";   // "shutt" - the address of this arduino board/ transmitter
 const byte masterNodeAddress[6] = "mastr";
